@@ -4,7 +4,7 @@ This my designed, printed, soldered, and tested 12V motor driver.
 
 ## Schematic 
 
-![schematic](schematic.PNG)
+![schematic](Schematic.PNG)
 
 ## PCB Layout 
 
