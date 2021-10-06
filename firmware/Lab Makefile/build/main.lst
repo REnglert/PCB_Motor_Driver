@@ -1,0 +1,479 @@
+ARM GAS  /var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s 			page 1
+
+
+   1              		.cpu cortex-m0
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"main.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.LED_init,"ax",%progbits
+  16              		.align	1
+  17              		.global	LED_init
+  18              		.arch armv6s-m
+  19              		.syntax unified
+  20              		.code	16
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	LED_init:
+  25              	.LFB43:
+  26              		.file 1 "Src/main.c"
+   1:Src/main.c    **** 
+   2:Src/main.c    **** #include <stdio.h>
+   3:Src/main.c    **** #include <stdlib.h>
+   4:Src/main.c    **** #include "stm32f0xx.h"
+   5:Src/main.c    **** #include "motor.h"
+   6:Src/main.c    **** 
+   7:Src/main.c    **** /* ------------------------------------------------------------------------------------------------
+   8:Src/main.c    ****  *  Global Variable Declarations
+   9:Src/main.c    ****  *  -----------------------------------------------------------------------------------------------
+  10:Src/main.c    ****  */
+  11:Src/main.c    **** volatile uint32_t debouncer;
+  12:Src/main.c    **** 
+  13:Src/main.c    **** /* ------------------------------------------------------------------------------------------------
+  14:Src/main.c    ****  *  Miscellaneous Core Functions
+  15:Src/main.c    ****  *  -----------------------------------------------------------------------------------------------
+  16:Src/main.c    ****  */
+  17:Src/main.c    **** 
+  18:Src/main.c    **** void LED_init(void) {
+  27              		.loc 1 18 21 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 10B5     		push	{r4, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 4, -8
+  35              		.cfi_offset 14, -4
+  19:Src/main.c    ****     // Initialize PC8 and PC9 for LED's
+  20:Src/main.c    ****     RCC->AHBENR |= RCC_AHBENR_GPIOCEN;                                          // Enable periphera
+  36              		.loc 1 20 5 view .LVU1
+  37              		.loc 1 20 17 is_stmt 0 view .LVU2
+  38 0002 0D4A     		ldr	r2, .L2
+ARM GAS  /var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s 			page 2
+
+
+  39 0004 5169     		ldr	r1, [r2, #20]
+  40 0006 8023     		movs	r3, #128
+  41 0008 1B03     		lsls	r3, r3, #12
+  42 000a 0B43     		orrs	r3, r1
+  43 000c 5361     		str	r3, [r2, #20]
+  21:Src/main.c    ****     GPIOC->MODER |= GPIO_MODER_MODER8_0 | GPIO_MODER_MODER9_0;                  // Set PC8 & PC9 to
+  44              		.loc 1 21 5 is_stmt 1 view .LVU3
+  45              		.loc 1 21 18 is_stmt 0 view .LVU4
+  46 000e 0B4B     		ldr	r3, .L2+4
+  47 0010 1968     		ldr	r1, [r3]
+  48 0012 A022     		movs	r2, #160
+  49 0014 D202     		lsls	r2, r2, #11
+  50 0016 0A43     		orrs	r2, r1
+  51 0018 1A60     		str	r2, [r3]
+  22:Src/main.c    ****     GPIOC->OTYPER &= ~(GPIO_OTYPER_OT_8 | GPIO_OTYPER_OT_9);                    // Set to push-pull
+  52              		.loc 1 22 5 is_stmt 1 view .LVU5
+  53              		.loc 1 22 19 is_stmt 0 view .LVU6
+  54 001a 5968     		ldr	r1, [r3, #4]
+  55 001c 084C     		ldr	r4, .L2+8
+  56 001e 2140     		ands	r1, r4
+  57 0020 5960     		str	r1, [r3, #4]
+  23:Src/main.c    ****     GPIOC->OSPEEDR &= ~((GPIO_OSPEEDR_OSPEEDR8_0 | GPIO_OSPEEDR_OSPEEDR8_1) |
+  58              		.loc 1 23 5 is_stmt 1 view .LVU7
+  59              		.loc 1 23 20 is_stmt 0 view .LVU8
+  60 0022 9868     		ldr	r0, [r3, #8]
+  61 0024 074A     		ldr	r2, .L2+12
+  62 0026 1040     		ands	r0, r2
+  63 0028 9860     		str	r0, [r3, #8]
+  24:Src/main.c    ****                         (GPIO_OSPEEDR_OSPEEDR9_0 | GPIO_OSPEEDR_OSPEEDR9_1));   // Set to low speed
+  25:Src/main.c    ****     GPIOC->PUPDR &= ~((GPIO_PUPDR_PUPDR8_0 | GPIO_PUPDR_PUPDR8_1) |
+  64              		.loc 1 25 5 is_stmt 1 view .LVU9
+  65              		.loc 1 25 18 is_stmt 0 view .LVU10
+  66 002a D968     		ldr	r1, [r3, #12]
+  67 002c 1140     		ands	r1, r2
+  68 002e D960     		str	r1, [r3, #12]
+  26:Src/main.c    ****                       (GPIO_PUPDR_PUPDR9_0 | GPIO_PUPDR_PUPDR9_1));             // Set to no pull-u
+  27:Src/main.c    ****     GPIOC->ODR &= ~(GPIO_ODR_8 | GPIO_ODR_9);                                   // Shut off LED's
+  69              		.loc 1 27 5 is_stmt 1 view .LVU11
+  70              		.loc 1 27 16 is_stmt 0 view .LVU12
+  71 0030 5A69     		ldr	r2, [r3, #20]
+  72 0032 2240     		ands	r2, r4
+  73 0034 5A61     		str	r2, [r3, #20]
+  28:Src/main.c    **** }
+  74              		.loc 1 28 1 view .LVU13
+  75              		@ sp needed
+  76 0036 10BD     		pop	{r4, pc}
+  77              	.L3:
+  78              		.align	2
+  79              	.L2:
+  80 0038 00100240 		.word	1073876992
+  81 003c 00080048 		.word	1207961600
+  82 0040 FFFCFFFF 		.word	-769
+  83 0044 FFFFF0FF 		.word	-983041
+  84              		.cfi_endproc
+  85              	.LFE43:
+  87              		.section	.text.button_init,"ax",%progbits
+  88              		.align	1
+ARM GAS  /var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s 			page 3
+
+
+  89              		.global	button_init
+  90              		.syntax unified
+  91              		.code	16
+  92              		.thumb_func
+  93              		.fpu softvfp
+  95              	button_init:
+  96              	.LFB44:
+  29:Src/main.c    **** 
+  30:Src/main.c    **** void  button_init(void) {
+  97              		.loc 1 30 25 is_stmt 1 view -0
+  98              		.cfi_startproc
+  99              		@ args = 0, pretend = 0, frame = 0
+ 100              		@ frame_needed = 0, uses_anonymous_args = 0
+ 101              		@ link register save eliminated.
+  31:Src/main.c    ****     // Initialize PA0 for button input
+  32:Src/main.c    ****     RCC->AHBENR |= RCC_AHBENR_GPIOAEN;                                          // Enable periphera
+ 102              		.loc 1 32 5 view .LVU15
+ 103              		.loc 1 32 17 is_stmt 0 view .LVU16
+ 104 0000 0A4A     		ldr	r2, .L5
+ 105 0002 5169     		ldr	r1, [r2, #20]
+ 106 0004 8023     		movs	r3, #128
+ 107 0006 9B02     		lsls	r3, r3, #10
+ 108 0008 0B43     		orrs	r3, r1
+ 109 000a 5361     		str	r3, [r2, #20]
+  33:Src/main.c    ****     GPIOA->MODER &= ~(GPIO_MODER_MODER0_0 | GPIO_MODER_MODER0_1);               // Set PA0 to input
+ 110              		.loc 1 33 5 is_stmt 1 view .LVU17
+ 111              		.loc 1 33 18 is_stmt 0 view .LVU18
+ 112 000c 9022     		movs	r2, #144
+ 113 000e D205     		lsls	r2, r2, #23
+ 114 0010 1368     		ldr	r3, [r2]
+ 115 0012 0321     		movs	r1, #3
+ 116 0014 8B43     		bics	r3, r1
+ 117 0016 1360     		str	r3, [r2]
+  34:Src/main.c    ****     GPIOC->OSPEEDR &= ~(GPIO_OSPEEDR_OSPEEDR0_0 | GPIO_OSPEEDR_OSPEEDR0_1);     // Set to low speed
+ 118              		.loc 1 34 5 is_stmt 1 view .LVU19
+ 119              		.loc 1 34 20 is_stmt 0 view .LVU20
+ 120 0018 054B     		ldr	r3, .L5+4
+ 121 001a 9A68     		ldr	r2, [r3, #8]
+ 122 001c 8A43     		bics	r2, r1
+ 123 001e 9A60     		str	r2, [r3, #8]
+  35:Src/main.c    ****     GPIOC->PUPDR |= GPIO_PUPDR_PUPDR0_1;                                        // Set to pull-down
+ 124              		.loc 1 35 5 is_stmt 1 view .LVU21
+ 125              		.loc 1 35 18 is_stmt 0 view .LVU22
+ 126 0020 DA68     		ldr	r2, [r3, #12]
+ 127 0022 0139     		subs	r1, r1, #1
+ 128 0024 0A43     		orrs	r2, r1
+ 129 0026 DA60     		str	r2, [r3, #12]
+  36:Src/main.c    **** }
+ 130              		.loc 1 36 1 view .LVU23
+ 131              		@ sp needed
+ 132 0028 7047     		bx	lr
+ 133              	.L6:
+ 134 002a C046     		.align	2
+ 135              	.L5:
+ 136 002c 00100240 		.word	1073876992
+ 137 0030 00080048 		.word	1207961600
+ 138              		.cfi_endproc
+ARM GAS  /var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s 			page 4
+
+
+ 139              	.LFE44:
+ 141              		.section	.text.HAL_SYSTICK_Callback,"ax",%progbits
+ 142              		.align	1
+ 143              		.global	HAL_SYSTICK_Callback
+ 144              		.syntax unified
+ 145              		.code	16
+ 146              		.thumb_func
+ 147              		.fpu softvfp
+ 149              	HAL_SYSTICK_Callback:
+ 150              	.LFB45:
+  37:Src/main.c    **** 
+  38:Src/main.c    **** /* Called by SysTick Interrupt
+  39:Src/main.c    ****  * Performs button debouncing, changes wave type on button rising edge
+  40:Src/main.c    ****  * Updates frequency output from ADC value
+  41:Src/main.c    ****  */
+  42:Src/main.c    **** void HAL_SYSTICK_Callback(void) {
+ 151              		.loc 1 42 33 is_stmt 1 view -0
+ 152              		.cfi_startproc
+ 153              		@ args = 0, pretend = 0, frame = 0
+ 154              		@ frame_needed = 0, uses_anonymous_args = 0
+ 155              		@ link register save eliminated.
+  43:Src/main.c    ****     // Remember that this function is called by the SysTick interrupt
+  44:Src/main.c    ****     // You can't call any functions in here that use delay
+  45:Src/main.c    **** 
+  46:Src/main.c    ****     debouncer = (debouncer << 1);
+ 156              		.loc 1 46 5 view .LVU25
+ 157              		.loc 1 46 28 is_stmt 0 view .LVU26
+ 158 0000 154A     		ldr	r2, .L17
+ 159 0002 1368     		ldr	r3, [r2]
+ 160 0004 5B00     		lsls	r3, r3, #1
+ 161              		.loc 1 46 15 view .LVU27
+ 162 0006 1360     		str	r3, [r2]
+  47:Src/main.c    ****     if(GPIOA->IDR & (1 << 0)) {
+ 163              		.loc 1 47 5 is_stmt 1 view .LVU28
+ 164              		.loc 1 47 13 is_stmt 0 view .LVU29
+ 165 0008 9023     		movs	r3, #144
+ 166 000a DB05     		lsls	r3, r3, #23
+ 167 000c 1B69     		ldr	r3, [r3, #16]
+ 168              		.loc 1 47 7 view .LVU30
+ 169 000e DB07     		lsls	r3, r3, #31
+ 170 0010 03D5     		bpl	.L8
+  48:Src/main.c    ****         debouncer |= 0x1;
+ 171              		.loc 1 48 9 is_stmt 1 view .LVU31
+ 172              		.loc 1 48 19 is_stmt 0 view .LVU32
+ 173 0012 1368     		ldr	r3, [r2]
+ 174 0014 0121     		movs	r1, #1
+ 175 0016 0B43     		orrs	r3, r1
+ 176 0018 1360     		str	r3, [r2]
+ 177              	.L8:
+  49:Src/main.c    ****     }
+  50:Src/main.c    **** 
+  51:Src/main.c    ****     if(debouncer == 0x7FFFFFFF) {
+ 178              		.loc 1 51 5 is_stmt 1 view .LVU33
+ 179              		.loc 1 51 18 is_stmt 0 view .LVU34
+ 180 001a 0F4B     		ldr	r3, .L17
+ 181 001c 1A68     		ldr	r2, [r3]
+ 182              		.loc 1 51 7 view .LVU35
+ARM GAS  /var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s 			page 5
+
+
+ 183 001e 0F4B     		ldr	r3, .L17+4
+ 184 0020 9A42     		cmp	r2, r3
+ 185 0022 00D0     		beq	.L15
+ 186              	.L7:
+  52:Src/main.c    ****     switch(target_rpm) {
+  53:Src/main.c    ****         case 80:
+  54:Src/main.c    ****             target_rpm = 50;
+  55:Src/main.c    ****             break;
+  56:Src/main.c    ****         case 50:
+  57:Src/main.c    ****             target_rpm = 81;
+  58:Src/main.c    ****             break;
+  59:Src/main.c    ****         case 0:
+  60:Src/main.c    ****             target_rpm = 80;
+  61:Src/main.c    ****             break;
+  62:Src/main.c    ****         default:
+  63:Src/main.c    ****             target_rpm = 0;
+  64:Src/main.c    ****             break;
+  65:Src/main.c    ****         }
+  66:Src/main.c    ****     }
+  67:Src/main.c    **** }
+ 187              		.loc 1 67 1 view .LVU36
+ 188              		@ sp needed
+ 189 0024 7047     		bx	lr
+ 190              	.L15:
+  52:Src/main.c    ****     switch(target_rpm) {
+ 191              		.loc 1 52 5 is_stmt 1 view .LVU37
+ 192 0026 0E4B     		ldr	r3, .L17+8
+ 193 0028 1B88     		ldrh	r3, [r3]
+ 194 002a 1BB2     		sxth	r3, r3
+ 195 002c 322B     		cmp	r3, #50
+ 196 002e 0BD0     		beq	.L10
+ 197 0030 502B     		cmp	r3, #80
+ 198 0032 05D0     		beq	.L11
+ 199 0034 002B     		cmp	r3, #0
+ 200 0036 0BD0     		beq	.L16
+  63:Src/main.c    ****             break;
+ 201              		.loc 1 63 13 view .LVU38
+  63:Src/main.c    ****             break;
+ 202              		.loc 1 63 24 is_stmt 0 view .LVU39
+ 203 0038 094B     		ldr	r3, .L17+8
+ 204 003a 0022     		movs	r2, #0
+ 205 003c 1A80     		strh	r2, [r3]
+  64:Src/main.c    ****         }
+ 206              		.loc 1 64 13 is_stmt 1 view .LVU40
+ 207              		.loc 1 67 1 is_stmt 0 view .LVU41
+ 208 003e F1E7     		b	.L7
+ 209              	.L11:
+  54:Src/main.c    ****             break;
+ 210              		.loc 1 54 13 is_stmt 1 view .LVU42
+  54:Src/main.c    ****             break;
+ 211              		.loc 1 54 24 is_stmt 0 view .LVU43
+ 212 0040 074B     		ldr	r3, .L17+8
+ 213 0042 3222     		movs	r2, #50
+ 214 0044 1A80     		strh	r2, [r3]
+  55:Src/main.c    ****         case 50:
+ 215              		.loc 1 55 13 is_stmt 1 view .LVU44
+ 216 0046 EDE7     		b	.L7
+ARM GAS  /var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s 			page 6
+
+
+ 217              	.L10:
+  57:Src/main.c    ****             break;
+ 218              		.loc 1 57 13 view .LVU45
+  57:Src/main.c    ****             break;
+ 219              		.loc 1 57 24 is_stmt 0 view .LVU46
+ 220 0048 054B     		ldr	r3, .L17+8
+ 221 004a 5122     		movs	r2, #81
+ 222 004c 1A80     		strh	r2, [r3]
+  58:Src/main.c    ****         case 0:
+ 223              		.loc 1 58 13 is_stmt 1 view .LVU47
+ 224 004e E9E7     		b	.L7
+ 225              	.L16:
+  60:Src/main.c    ****             break;
+ 226              		.loc 1 60 13 view .LVU48
+  60:Src/main.c    ****             break;
+ 227              		.loc 1 60 24 is_stmt 0 view .LVU49
+ 228 0050 034B     		ldr	r3, .L17+8
+ 229 0052 5022     		movs	r2, #80
+ 230 0054 1A80     		strh	r2, [r3]
+  61:Src/main.c    ****         default:
+ 231              		.loc 1 61 13 is_stmt 1 view .LVU50
+ 232 0056 E5E7     		b	.L7
+ 233              	.L18:
+ 234              		.align	2
+ 235              	.L17:
+ 236 0058 00000000 		.word	.LANCHOR0
+ 237 005c FFFFFF7F 		.word	2147483647
+ 238 0060 00000000 		.word	target_rpm
+ 239              		.cfi_endproc
+ 240              	.LFE45:
+ 242              		.section	.text.main,"ax",%progbits
+ 243              		.align	1
+ 244              		.global	main
+ 245              		.syntax unified
+ 246              		.code	16
+ 247              		.thumb_func
+ 248              		.fpu softvfp
+ 250              	main:
+ 251              	.LVL0:
+ 252              	.LFB46:
+  68:Src/main.c    **** 
+  69:Src/main.c    **** /* ------------------------------------------------------------------------------------------------
+  70:Src/main.c    ****  * Main Program Code
+  71:Src/main.c    ****  *
+  72:Src/main.c    ****  * Starts initialization of peripherals
+  73:Src/main.c    ****  * Blinks green LED (PC9) in loop as heartbeat
+  74:Src/main.c    ****  * ------------------------------------------------------------------------------------------------
+  75:Src/main.c    ****  */
+  76:Src/main.c    **** volatile uint32_t encoder_count = 0;
+  77:Src/main.c    **** 
+  78:Src/main.c    **** int main(int argc, char* argv[]) {
+ 253              		.loc 1 78 34 view -0
+ 254              		.cfi_startproc
+ 255              		@ Volatile: function does not return.
+ 256              		@ args = 0, pretend = 0, frame = 0
+ 257              		@ frame_needed = 0, uses_anonymous_args = 0
+ 258              		.loc 1 78 34 is_stmt 0 view .LVU52
+ARM GAS  /var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s 			page 7
+
+
+ 259 0000 10B5     		push	{r4, lr}
+ 260              	.LCFI1:
+ 261              		.cfi_def_cfa_offset 8
+ 262              		.cfi_offset 4, -8
+ 263              		.cfi_offset 14, -4
+  79:Src/main.c    **** 
+  80:Src/main.c    ****     debouncer = 0;                          // Initialize global variables
+ 264              		.loc 1 80 5 is_stmt 1 view .LVU53
+ 265              		.loc 1 80 15 is_stmt 0 view .LVU54
+ 266 0002 0D4B     		ldr	r3, .L21
+ 267 0004 0022     		movs	r2, #0
+ 268 0006 1A60     		str	r2, [r3]
+  81:Src/main.c    **** 		HAL_Init();															// Initialize HAL
+ 269              		.loc 1 81 3 is_stmt 1 view .LVU55
+ 270 0008 FFF7FEFF 		bl	HAL_Init
+ 271              	.LVL1:
+  82:Src/main.c    ****     LED_init();                             // Initialize LED's
+ 272              		.loc 1 82 5 view .LVU56
+ 273 000c FFF7FEFF 		bl	LED_init
+ 274              	.LVL2:
+  83:Src/main.c    ****     button_init();                          // Initialize button
+ 275              		.loc 1 83 5 view .LVU57
+ 276 0010 FFF7FEFF 		bl	button_init
+ 277              	.LVL3:
+  84:Src/main.c    **** 
+  85:Src/main.c    ****     motor_init();                           // Initialize motor code
+ 278              		.loc 1 85 5 view .LVU58
+ 279 0014 FFF7FEFF 		bl	motor_init
+ 280              	.LVL4:
+ 281              	.L20:
+  86:Src/main.c    **** 
+  87:Src/main.c    ****     while (1) {
+ 282              		.loc 1 87 5 discriminator 1 view .LVU59
+  88:Src/main.c    ****         GPIOC->ODR ^= GPIO_ODR_9;           // Toggle green LED (heartbeat)
+ 283              		.loc 1 88 9 discriminator 1 view .LVU60
+ 284              		.loc 1 88 20 is_stmt 0 discriminator 1 view .LVU61
+ 285 0018 084A     		ldr	r2, .L21+4
+ 286 001a 5169     		ldr	r1, [r2, #20]
+ 287 001c 8023     		movs	r3, #128
+ 288 001e 9B00     		lsls	r3, r3, #2
+ 289 0020 4B40     		eors	r3, r1
+ 290 0022 5361     		str	r3, [r2, #20]
+  89:Src/main.c    ****         encoder_count = TIM2->CNT;
+ 291              		.loc 1 89 9 is_stmt 1 discriminator 1 view .LVU62
+ 292              		.loc 1 89 29 is_stmt 0 discriminator 1 view .LVU63
+ 293 0024 8023     		movs	r3, #128
+ 294 0026 DB05     		lsls	r3, r3, #23
+ 295 0028 5A6A     		ldr	r2, [r3, #36]
+ 296              		.loc 1 89 23 discriminator 1 view .LVU64
+ 297 002a 054B     		ldr	r3, .L21+8
+ 298 002c 1A60     		str	r2, [r3]
+  90:Src/main.c    ****         HAL_Delay(128);                      // Delay 1/8 second
+ 299              		.loc 1 90 9 is_stmt 1 discriminator 1 view .LVU65
+ 300 002e 8020     		movs	r0, #128
+ 301 0030 FFF7FEFF 		bl	HAL_Delay
+ 302              	.LVL5:
+  87:Src/main.c    ****         GPIOC->ODR ^= GPIO_ODR_9;           // Toggle green LED (heartbeat)
+ARM GAS  /var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s 			page 8
+
+
+ 303              		.loc 1 87 11 discriminator 1 view .LVU66
+ 304 0034 F0E7     		b	.L20
+ 305              	.L22:
+ 306 0036 C046     		.align	2
+ 307              	.L21:
+ 308 0038 00000000 		.word	.LANCHOR0
+ 309 003c 00080048 		.word	1207961600
+ 310 0040 00000000 		.word	.LANCHOR1
+ 311              		.cfi_endproc
+ 312              	.LFE46:
+ 314              		.global	encoder_count
+ 315              		.global	debouncer
+ 316              		.section	.bss.debouncer,"aw",%nobits
+ 317              		.align	2
+ 318              		.set	.LANCHOR0,. + 0
+ 321              	debouncer:
+ 322 0000 00000000 		.space	4
+ 323              		.section	.bss.encoder_count,"aw",%nobits
+ 324              		.align	2
+ 325              		.set	.LANCHOR1,. + 0
+ 328              	encoder_count:
+ 329 0000 00000000 		.space	4
+ 330              		.text
+ 331              	.Letext0:
+ 332              		.file 2 "/usr/local/Caskroom/gcc-arm-embedded/10-2020-q4-major/gcc-arm-none-eabi-10-2020-q4-major/
+ 333              		.file 3 "/usr/local/Caskroom/gcc-arm-embedded/10-2020-q4-major/gcc-arm-none-eabi-10-2020-q4-major/
+ 334              		.file 4 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f072xb.h"
+ 335              		.file 5 "Inc/motor.h"
+ 336              		.file 6 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h"
+ARM GAS  /var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.c
+/var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s:16     .text.LED_init:0000000000000000 $t
+/var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s:24     .text.LED_init:0000000000000000 LED_init
+/var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s:80     .text.LED_init:0000000000000038 $d
+/var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s:88     .text.button_init:0000000000000000 $t
+/var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s:95     .text.button_init:0000000000000000 button_init
+/var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s:136    .text.button_init:000000000000002c $d
+/var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s:142    .text.HAL_SYSTICK_Callback:0000000000000000 $t
+/var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s:149    .text.HAL_SYSTICK_Callback:0000000000000000 HAL_SYSTICK_Callback
+/var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s:236    .text.HAL_SYSTICK_Callback:0000000000000058 $d
+/var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s:243    .text.main:0000000000000000 $t
+/var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s:250    .text.main:0000000000000000 main
+/var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s:308    .text.main:0000000000000038 $d
+/var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s:328    .bss.encoder_count:0000000000000000 encoder_count
+/var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s:321    .bss.debouncer:0000000000000000 debouncer
+/var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s:317    .bss.debouncer:0000000000000000 $d
+/var/folders/z1/9pc01z197v90cg4866q5qgbh0000gn/T//ccK9hW91.s:324    .bss.encoder_count:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+target_rpm
+HAL_Init
+motor_init
+HAL_Delay
